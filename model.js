@@ -1,10 +1,9 @@
 /**
- * MODELO
- * Maneja la configuración de Firebase y referencias a datos.
+ * MODELO: Maneja la configuración de Firebase y referencias a datos.
  */
 
 const firebaseConfig = {
-    apiKey: "", // Tu API Key
+    apiKey: "", // Tu API Key debe ir aquí si no está en la configuración del proyecto
     authDomain: "sindicato-pagos.firebaseapp.com",
     projectId: "sindicato-pagos",
     storageBucket: "sindicato-pagos.appspot.com",
@@ -18,5 +17,5 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const appId = "sindicato-pagos-v1";
 
-// Helpers para rutas de Firestore
+// Helper para obtener referencias a colecciones públicas
 const getPublicRef = (coll) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(coll);
