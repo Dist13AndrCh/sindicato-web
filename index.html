@@ -5,162 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control Sindical - Reportes y Gestión</title>
     
-    <!-- Librerías Externas (Firebase Compat) -->
+    <!-- Librerías Externas (Firebase Compat SDK) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <!-- Enlace al archivo de estilos separado -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Estilos Externos -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <div id="loading" class="loading-overlay">
-        <div class="spinner"></div>
+        <div class="loader"></div>
     </div>
 
-    <!-- Pantalla de Inicio / Consulta Pública -->
-    <div id="view-home" class="container" style="display: block;">
-        <header class="header">
+    <header>
+        <div class="header-content no-print">
             <h1>CONTROL SINDICAL</h1>
-            <p>Consulta de Afiliados y Estado de Cuentas</p>
-        </header>
-
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Nombre completo del socio..." onkeyup="handleSearch(event)">
-            <button onclick="searchSocio()">Consultar</button>
+            <button id="logout-btn" class="logout-btn" style="display: none;" onclick="logout()">Cerrar Sesión</button>
         </div>
+    </header>
 
-        <div id="home-results"></div>
+    <main id="auth-container" class="auth-card">
+        <h2>Acceso Administrativo</h2>
+        <input type="email" id="email" placeholder="Correo Electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Ingresar</button>
+    </main>
 
-        <!-- Pingüino para el acceso administrativo -->
-        <div class="footer-pingu" onclick="openLoginModal()">🐧</div>
-    </div>
+    <div id="app-content" style="display: none;">
+        <nav class="tabs no-print">
+            <button class="tab-btn active" onclick="switchTab('socios')">Socios</button>
+            <button class="tab-btn" onclick="switchTab('pagos')">Pagos</button>
+            <button class="tab-btn" onclick="switchTab('reportes')">Reportes</button>
+        </nav>
 
-    <!-- Panel de Administración -->
-    <div id="view-admin" class="container">
-        <header class="header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 id="admin-title">Panel Administrativo</h1>
-                    <p>Sindicato de Transportes</p>
-                </div>
-                <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
-            </div>
-        </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('socios')">SOCIOS</button>
-            <button class="tab-btn" onclick="switchTab('pagos')">PAGOS</button>
-            <button class="tab-btn" onclick="switchTab('reportes')">REPORTES</button>
-            <button class="tab-btn" onclick="switchTab('config')">CONFIG</button>
-        </div>
-
-        <!-- Contenido de Pestañas -->
-        <div id="tab-socios" class="tab-content active">
+        <section id="tab-socios" class="tab-content active-tab">
             <div class="card">
-                <h3>Registro de Nuevo Socio</h3>
-                <div class="search-box" style="margin-top: 15px;">
-                    <input type="text" id="new-socio-name" placeholder="Nombre completo...">
+                <h3>Nuevo Socio</h3>
+                <div class="input-group">
+                    <input type="text" id="socio-nombre" placeholder="Nombre Completo">
                     <button onclick="addSocio()">Registrar</button>
                 </div>
             </div>
-            <div id="socios-list"></div>
-        </div>
-
-        <div id="tab-pagos" class="tab-content">
             <div class="card">
-                <h3>Registrar Pago de Mensualidades</h3>
-                <div class="search-box" style="margin-top: 15px; flex-direction: column; gap: 15px;">
-                    <select id="pay-socio-select" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;"></select>
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #666;">Meses a Pagar</label>
-                            <input type="number" id="pay-qty" value="1" min="1" oninput="updatePayDisplay()" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #666;">Monto Total (Bs)</label>
-                            <input type="text" id="pay-amount" readonly style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px; opacity: 0.7;">
-                        </div>
-                    </div>
-                    <button onclick="processPayment()" style="width: 100%;">Confirmar Pago</button>
-                </div>
+                <h3>Lista de Socios</h3>
+                <div id="socios-list" class="list-container"></div>
             </div>
-            <div id="recent-payments"></div>
-        </div>
+        </section>
 
-        <div id="tab-reportes" class="tab-content">
-            <div class="card no-print">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <section id="tab-pagos" class="tab-content">
+            <div class="card">
+                <h3>Registrar Pago</h3>
+                <div class="input-group-grid">
+                    <select id="pay-socio-select"></select>
+                    <input type="number" id="pay-qty" placeholder="Cant. Cuotas" oninput="updatePayDisplay()">
+                    <input type="text" id="pay-amount" placeholder="Total $" readonly>
+                </div>
+                <button class="w-full" onclick="addPago()">Confirmar Pago</button>
+            </div>
+            <div class="card">
+                <h3>Últimos Movimientos</h3>
+                <div id="pagos-list" class="list-container"></div>
+            </div>
+        </section>
+
+        <section id="tab-reportes" class="tab-content">
+            <div class="no-print">
+                <div class="sub-tabs">
                     <button id="btn-rep-ind" class="tab-btn active" onclick="switchReportSubTab('individual')">Individual</button>
                     <button id="btn-rep-gen" class="tab-btn" onclick="switchReportSubTab('general')">General</button>
                 </div>
-                <div id="sub-tab-individual">
-                    <select id="report-socio-select" onchange="generateIndividualReport()" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;"></select>
-                </div>
-                <div id="sub-tab-general" style="display: none;">
-                    <button onclick="generateGeneralReport()" style="width: 100%;">Generar Lista de Deudores</button>
-                </div>
             </div>
-            <div id="report-content" class="card" style="background: white; color: black; min-height: 400px; padding: 40px; border-radius: 0;">
-                <div style="text-align: center; color: #888; margin-top: 100px;">Seleccione un socio para generar reporte</div>
-            </div>
-            <button class="no-print" onclick="printReport()" style="width: 100%; margin-top: 20px; background: #333;">Imprimir / Guardar PDF</button>
-        </div>
 
-        <div id="tab-config" class="tab-content">
-            <div class="card">
-                <h3>Configuración de Gestión</h3>
-                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div>
-                            <label style="font-size: 12px; color: #666;">Año Gestión</label>
-                            <input type="number" id="conf-year" value="2024" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666;">Monto Mensual (Bs)</label>
-                            <input type="number" id="conf-price" value="10" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-                        </div>
-                    </div>
-                    <button onclick="saveConfig()">Actualizar Configuración</button>
+            <div id="sub-tab-individual">
+                <div class="card no-print">
+                    <select id="report-socio-select" onchange="generateIndividualReport()"></select>
+                    <button onclick="printReport()" style="margin-top: 1rem;">Imprimir Reporte</button>
                 </div>
+                <div id="report-print-area" class="print-area"></div>
             </div>
-            <div class="card" style="margin-top: 20px;">
-                <h3>Avisos a la Pantalla de Inicio</h3>
-                <textarea id="conf-aviso" placeholder="Escribe un comunicado..." style="width: 100%; height: 100px; margin-top: 15px; padding: 10px; background: #111; color: white; border: 1px solid #333; border-radius: 5px; resize: none;"></textarea>
-                <button onclick="saveAviso()" style="width: 100%; margin-top: 10px; background: #333;">Publicar Aviso</button>
+
+            <div id="sub-tab-general" style="display: none;">
+                <div class="card no-print">
+                    <button onclick="printReport()">Imprimir Estado General</button>
+                </div>
+                <div id="report-general-area" class="print-area"></div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <!-- Modales -->
-    <div id="login-modal" class="modal-overlay">
-        <div class="modal">
-            <h3>Acceso Administrativo</h3>
-            <input type="email" id="login-email" placeholder="Correo electrónico" style="width: 100%; margin: 10px 0; padding: 12px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-            <input type="password" id="login-pass" placeholder="Contraseña" style="width: 100%; margin: 10px 0; padding: 12px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="login()" style="flex: 2; background: #c41c1c; color: white; border: none; border-radius: 5px; cursor: pointer;">Ingresar</button>
-                <button onclick="closeLoginModal()" style="flex: 1; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Modales y Notificaciones -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal">
             <h3>Editar Socio</h3>
-            <input type="text" id="modal-edit-input" style="width: 100%; margin: 20px 0; padding: 12px; background: #111; color: white; border: 1px solid #333; border-radius: 5px;">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="saveEditSocio()" style="flex: 1; background: #c41c1c; color: white; border: none; border-radius: 5px;">Guardar</button>
-                <button onclick="closeModal()" style="flex: 1; background: #333; color: white; border: none; border-radius: 5px;">Cancelar</button>
+            <input type="text" id="modal-edit-input">
+            <div class="modal-actions">
+                <button onclick="closeModal()">Cancelar</button>
+                <button onclick="saveEditSocio()" class="btn-success">Guardar</button>
             </div>
         </div>
     </div>
 
-    <div id="toast-container"></div>
+    <div id="toast-container" class="toast-container"></div>
 
-    <!-- Carga de archivos JavaScript (El orden importa) -->
-    <script src="model.js"></script>
-    <script src="controller.js"></script>
+    <!-- Scripts Externos -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
