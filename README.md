@@ -1,64 +1,59 @@
-Sistema de Control Sindical - Gestión de Pagos y Socios
+🐧 Sistema de Gestión y Control Sindical
 
-Este es un sistema web moderno diseñado para la gestión administrativa de sindicatos. Permite el control de afiliados, registro de aportes mensuales, generación de reportes de deudas y comunicación de avisos importantes.
+Bienvenido al repositorio oficial del Sistema de Control Sindical. Una plataforma integral diseñada para modernizar la administración, optimizar la transparencia financiera y facilitar la comunicación entre la directiva y sus afiliados.
 
-🚀 Características
+🏛️ Sobre el Proyecto
 
-Consulta Pública: Los socios pueden buscar su estado de cuenta ingresando su nombre.
+Este sistema nace con la misión de digitalizar los procesos administrativos tradicionales de los sindicatos. A través de una interfaz elegante y de alto rendimiento, permitimos que la gestión de aportes y el seguimiento de socios dejen de ser una tarea compleja para convertirse en un proceso ágil y transparente.
 
-Panel Administrativo: Acceso restringido mediante autenticación para la directiva.
+✨ Características Principales
 
-Gestión de Socios: Registro, edición y eliminación de afiliados.
+🔍 Transparencia para el Socio
 
-Control de Pagos: Registro de aportes por gestión y cálculo automático de montos.
+Consulta Instantánea: Acceso público para que cada afiliado verifique su estado de cuenta en tiempo real.
 
-Reportes: Generación de estados de cuenta individuales y listas generales de deudores (listos para imprimir o guardar en PDF).
+Avisos Informativos: Una sección dedicada a comunicados oficiales visibles desde la pantalla de inicio.
 
-Diseño Moderno: Interfaz oscura (Dark Mode) optimizada para dispositivos móviles y escritorio.
+💼 Potencia Administrativa
 
-🏗️ Arquitectura (MVC)
+Control de Aportes: Registro de mensualidades con cálculos automáticos basados en la gestión actual.
 
-El proyecto ha sido organizado siguiendo el patrón Modelo-Vista-Controlador para facilitar su mantenimiento:
+Gestión de Afiliados: Base de datos centralizada para el alta, baja y edición de socios.
 
-Vista (index.html + styles.css): Contiene la estructura HTML y toda la capa estética y de diseño.
+Reportes de Precisión: Generación de estados de cuenta detallados y listas de deudores exportables a PDF.
 
-Modelo (model.js): Gestiona la conexión con Firebase y la estructura de las colecciones de datos.
+🛡️ Seguridad y Tecnología
 
-Controlador (controller.js): Contiene la lógica de negocio, manejo de eventos de usuario y renderizado dinámico de la interfaz.
+Autenticación Blindada: Acceso restringido para la directiva mediante Firebase Auth.
 
-🛠️ Tecnologías Utilizadas
+Sincronización en la Nube: Datos protegidos y actualizados al instante gracias a Firestore.
 
-Frontend: HTML5, CSS3 (Variables y Flexbox), JavaScript Vanilla.
+Arquitectura MVC: Código organizado profesionalmente para garantizar estabilidad y escalabilidad.
 
-Backend: Firebase (Firestore para base de datos y Authentication para el acceso).
+🏗️ Estructura del Software (MVC)
 
-Hosting: Compatible con GitHub Pages, Vercel o Netlify.
+El software está construido bajo el patrón Modelo-Vista-Controlador, asegurando que el diseño, la lógica y los datos operen de forma independiente y eficiente:
 
-⚙️ Configuración y Despliegue
+Vista (index.html + styles.css): Una experiencia de usuario refinada con Dark Mode nativo.
 
-1. Requisitos Previos
+Controlador (controller.js): El cerebro del sistema, encargado de la lógica de negocio y eventos.
 
-Tener una cuenta en Firebase y crear un proyecto nuevo.
+Modelo (model.js): La capa de datos que comunica la interfaz con los servicios de Google Firebase.
 
-2. Base de Datos (Firestore)
+⚙️ Configuración Rápida
 
-Crear la siguiente estructura de colecciones en Firestore:
-artifacts > sindicato-pagos-v1 > public > data > [socios, pagos, gestiones, avisos]
+Clonar: Descarga los archivos del repositorio.
 
-3. Autenticación
+Firebase: Configura tu apiKey y credenciales en model.js.
 
-Activar el método de inicio de sesión Correo electrónico/contraseña en la consola de Firebase y crear un usuario administrador manualmente.
+Firestore: Crea la estructura de colecciones: artifacts > sindicato-pagos-v1 > public > data.
 
-4. Configuración del Código
+Despliegue: Sube tu proyecto a GitHub Pages, Vercel o Netlify.
 
-En el archivo model.js, actualiza el objeto firebaseConfig con las credenciales de tu proyecto.
+📄 Filosofía de Uso
 
-5. Dominios Autorizados
+Este sistema ha sido desarrollado priorizando la facilidad de uso y la integridad de la información. Es una herramienta de propiedad privada orientada a fortalecer la institucionalidad sindical mediante la tecnología.
 
-Si publicas el sitio en GitHub Pages o Vercel, recuerda añadir el dominio (ej: tuusuario.github.io) en la sección Settings > Authorized domains dentro de Firebase Authentication.
+"Optimizando la transparencia y la administración sindical, un socio a la vez." 🐧
 
-📄 Licencia
-
-Este proyecto es de uso privado para la gestión sindical.
-
-Desarrollado para optimizar la transparencia y administración sindical. 🐧
+© 2026 - Gestión Sindical Digital
